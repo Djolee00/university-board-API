@@ -1,25 +1,23 @@
 package rs.ac.bg.fon.boardapi.model;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.GenericGenerator;
 
-import java.util.Objects;
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+
+import java.util.Objects;;
 
 @Entity
 @Table(name = "board_file")
 public class BoardFile {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name="uuid2",strategy="uuid2")
-    @Column(nullable = false,columnDefinition = "VARCHAR(36)")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String type;
     @Lob
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private byte[] data;
-
 
 
     public BoardFile(String name, String type, byte[] data) {
@@ -31,11 +29,11 @@ public class BoardFile {
     public BoardFile() {
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

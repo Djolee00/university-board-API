@@ -20,8 +20,8 @@ public class Employee {
     private String lastName;
     private String email;
 
-    @OneToMany(mappedBy = "employee",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Set<Membership> memberships = new HashSet<>();
+//    @OneToMany(mappedBy = "employee",cascade = CascadeType.ALL,orphanRemoval = true)
+//    private Set<Membership> memberships = new HashSet<>();
 
     public Employee(String firstName, String lastName, String email) {
         this.firstName = firstName;
@@ -32,6 +32,14 @@ public class Employee {
     public Employee() {
     }
 
+//    public void addMembership(Membership membership){
+//        if(memberships == null){
+//            memberships = new HashSet<>();
+//        }
+//        if(membership != null){
+//            memberships.add(membership);
+//        }
+//    }
     public Long getId() {
         return id;
     }
@@ -64,25 +72,26 @@ public class Employee {
         this.email = email;
     }
 
-    public Set<Membership> getMemberships() {
-        return memberships;
-    }
+//    public Set<Membership> getMemberships() {
+//        return memberships;
+//    }
 
-    public void setMemberships(Set<Membership> memberships) {
-        this.memberships = memberships;
-    }
+//    public void setMemberships(Set<Membership> memberships) {
+//        this.memberships = memberships;
+//    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName) && Objects.equals(email, employee.email);
+        return Objects.equals(id, employee.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName, email);
+        return Objects.hash(id);
     }
 
     @Override
@@ -92,7 +101,6 @@ public class Employee {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", memberships=" + memberships +
                 '}';
     }
 }

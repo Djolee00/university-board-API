@@ -1,5 +1,11 @@
 package rs.ac.bg.fon.boardapi.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -14,18 +20,25 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    @JsonDeserialize(using= LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate startDate;
+    @JsonFormat(pattern = "yyyy/MM/dd")
+    @JsonDeserialize(using= LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate endDate;
 
     @ManyToOne
     @JoinColumn(name = "board_status_id")
     private BoardStatus boardStatus;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "board_id", referencedColumnName = "id")
     private Set<BoardFile> boardFiles;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "board", orphanRemoval = true)
     private Set<Membership> memberships;
 
     public Board(String name, LocalDate startDate, LocalDate endDate, BoardStatus boardStatus, Set<BoardFile> boardFiles, Set<Membership> memberships) {
@@ -49,11 +62,14 @@ public class Board {
         }
     }
 
-    public void addEmployee(Employee employee, MembershipStatus membershipStatus){
-        if(employee != null && membershipStatus != null){
-            Membership membership = new Membership(this,employee,LocalDate.now(),membershipStatus);
+    public void addMembership(Membership membership){
+        if(memberships == null){
+            memberships = new HashSet<>();
+        }
+
+        if(membership!=null){
             memberships.add(membership);
-            employee.getMemberships().add(membership);
+            membership.setBoard(this);
         }
     }
 
@@ -101,16 +117,16 @@ public class Board {
         return memberships;
     }
 
-    public void setMemberships(Set<Membership> memberships) {
-        this.memberships = memberships;
-    }
-
     public Set<BoardFile> getBoardFiles() {
         return boardFiles;
     }
 
     public void setBoardFiles(Set<BoardFile> boardFiles) {
         this.boardFiles = boardFiles;
+    }
+
+    public void setMemberships(Set<Membership> memberships) {
+        this.memberships = memberships;
     }
 
     @Override
@@ -126,5 +142,16 @@ public class Board {
         return Objects.hash(id, name);
     }
 
-
+    @Override
+    public String toString() {
+        return "Board{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", boardStatus=" + boardStatus +
+                ", boardFiles=" + boardFiles +
+                ", memberships=" + memberships +
+                '}';
+    }
 }
