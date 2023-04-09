@@ -11,7 +11,6 @@ import rs.ac.bg.fon.boardapi.model.Board;
 import rs.ac.bg.fon.boardapi.model.BoardFile;
 import rs.ac.bg.fon.boardapi.repository.BoardRepository;
 import rs.ac.bg.fon.boardapi.service.BoardService;
-import rs.ac.bg.fon.boardapi.service.EmployeeService;
 
 import java.io.IOException;
 import java.util.Arrays;

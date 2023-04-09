@@ -2,6 +2,7 @@ package rs.ac.bg.fon.boardapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.MediaType;
@@ -15,10 +16,7 @@ import rs.ac.bg.fon.boardapi.dto.BoardPostDto;
 import rs.ac.bg.fon.boardapi.model.*;
 import rs.ac.bg.fon.boardapi.service.BoardService;
 
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/boards")
@@ -32,7 +30,7 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<Board> create(@RequestPart("board") BoardPostDto boardPostDto, @RequestPart("files") MultipartFile[] files) throws IOException {
+    public ResponseEntity<Board> create(@Valid @RequestPart("board") BoardPostDto boardPostDto, @RequestPart("files") MultipartFile[] files) throws IOException {
         Board createdBoard = boardService.create(boardPostDto,files);
         return ResponseEntity.ok(createdBoard);
     }

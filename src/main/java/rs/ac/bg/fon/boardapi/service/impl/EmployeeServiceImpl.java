@@ -1,9 +1,9 @@
 package rs.ac.bg.fon.boardapi.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rs.ac.bg.fon.boardapi.exception.custom.EmployeeNotFoundException;
 import rs.ac.bg.fon.boardapi.model.Employee;
 import rs.ac.bg.fon.boardapi.repository.EmployeeRepository;
 import rs.ac.bg.fon.boardapi.service.EmployeeService;
@@ -21,6 +21,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee getById(Long id) {
-        return employeeRepository.findById(id).orElseThrow(()->new RuntimeException());  //TODO: make custom exc
+        return employeeRepository.findById(id).orElseThrow(()->new EmployeeNotFoundException(id));
     }
 }
