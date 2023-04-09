@@ -1,9 +1,9 @@
 package rs.ac.bg.fon.boardapi.exception;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,11 +43,18 @@ public class ApiExceptionHandler {
             );
             violations.add(violation);
         }
+
+        for(ObjectError error:ex.getBindingResult().getGlobalErrors()){
+            Violation violation = new Violation(
+                    error.getCode(),
+                    error.getDefaultMessage(),
+                    ZonedDateTime.now(ZoneId.of("Z"))
+            );
+            violations.add(violation);
+        }
+
         return new ErrorResponse(violations);
     }
-
-
-
 }
 
 record CustomException(String message, HttpStatus http, ZonedDateTime timestamp) {

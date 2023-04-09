@@ -13,7 +13,7 @@ import rs.ac.bg.fon.boardapi.validator.constraint.DatesMatch;
 import java.time.LocalDate;
 import java.util.Set;
 
-@DatesMatch(message = "Start date must be before end date!")
+@DatesMatch(message = "Start date must be before end date")
 public record BoardPostDto(
 
         @NotBlank(message = "Name of Board is required field")
