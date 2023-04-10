@@ -1,18 +1,16 @@
 package rs.ac.bg.fon.boardapi.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import rs.ac.bg.fon.boardapi.dto.BoardPostDto;
+import rs.ac.bg.fon.boardapi.dto.BoardCreationDto;
+import rs.ac.bg.fon.boardapi.dto.BoardDto;
 import rs.ac.bg.fon.boardapi.model.*;
 import rs.ac.bg.fon.boardapi.service.BoardService;
 
@@ -30,8 +28,8 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<Board> create(@Valid @RequestPart("board") BoardPostDto boardPostDto, @RequestPart("files") MultipartFile[] files) throws IOException {
-        Board createdBoard = boardService.create(boardPostDto,files);
-        return ResponseEntity.ok(createdBoard);
+    public ResponseEntity<BoardDto> create(@Valid @RequestPart("board") BoardCreationDto boardCreationDto, @RequestPart(value = "files",required = false) MultipartFile[] files) throws IOException {
+        BoardDto createdBoard = boardService.create(boardCreationDto,files);
+        return new ResponseEntity<>(createdBoard,HttpStatus.CREATED);
     }
 }

@@ -5,7 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import rs.ac.bg.fon.boardapi.dto.BoardPostDto;
+import rs.ac.bg.fon.boardapi.dto.BoardCreationDto;
+import rs.ac.bg.fon.boardapi.dto.BoardDto;
 import rs.ac.bg.fon.boardapi.mapper.BoardMapper;
 import rs.ac.bg.fon.boardapi.model.Board;
 import rs.ac.bg.fon.boardapi.model.BoardFile;
@@ -29,8 +30,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board create(BoardPostDto boardPostDto, MultipartFile[] files) {
-        Board board = boardMapper.boardPostDtoToBoard(boardPostDto);
+    public BoardDto create(BoardCreationDto boardCreationDto, MultipartFile[] files) {
+        Board board = boardMapper.boardPostDtoToBoard(boardCreationDto);
         if (files != null && files.length > 0) {
             Arrays.asList(files).stream().forEach(file -> {
                 try {
@@ -40,6 +41,6 @@ public class BoardServiceImpl implements BoardService {
                 }
             });
         }
-        return boardRepository.save(board);
+        return boardMapper.boardToBoardDto(boardRepository.save(board));
     }
 }

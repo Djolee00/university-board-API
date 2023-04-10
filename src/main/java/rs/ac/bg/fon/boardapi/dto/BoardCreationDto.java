@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @DatesMatch(message = "Start date must be before end date")
-public record BoardPostDto(
+public record BoardCreationDto(
 
         @NotBlank(message = "Name of Board is required field")
         String name,
