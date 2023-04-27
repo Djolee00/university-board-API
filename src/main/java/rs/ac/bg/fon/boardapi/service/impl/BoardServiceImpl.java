@@ -18,7 +18,6 @@ import rs.ac.bg.fon.boardapi.service.BoardService;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Function;
 
 @Service
 @Transactional

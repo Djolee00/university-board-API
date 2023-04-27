@@ -12,7 +12,6 @@ import rs.ac.bg.fon.boardapi.dto.BoardCreationDto;
 import rs.ac.bg.fon.boardapi.dto.BoardDto;
 import rs.ac.bg.fon.boardapi.service.BoardService;
 
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/boards")
