@@ -1,6 +1,8 @@
 package rs.ac.bg.fon.boardapi.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -15,6 +17,8 @@ import rs.ac.bg.fon.boardapi.service.BoardService;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Function;
 
 @Service
 @Transactional
@@ -33,14 +37,21 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto create(BoardCreationDto boardCreationDto, MultipartFile[] files) {
         Board board = boardMapper.boardPostDtoToBoard(boardCreationDto);
         if (files != null && files.length > 0) {
-            Arrays.asList(files).stream().forEach(file -> {
+            Arrays.stream(files).forEach(file -> {
                 try {
-                    board.addBoardFile(new BoardFile(StringUtils.cleanPath(file.getOriginalFilename()), file.getContentType(), file.getBytes()));
+                     board.addBoardFile(new BoardFile(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())), file.getContentType(), file.getBytes()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             });
         }
         return boardMapper.boardToBoardDto(boardRepository.save(board));
+    }
+
+    @Override
+    public Page<BoardDto> getAll(Pageable pageable) {
+        Page<Board> boards = boardRepository.findAll(pageable);
+
+        return boards.map(boardMapper::boardToBoardDto);
     }
 }
