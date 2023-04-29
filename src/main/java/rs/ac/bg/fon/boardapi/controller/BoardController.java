@@ -35,4 +35,10 @@ public class BoardController {
         Page<BoardDto> page = boardService.getAll(pageable);
         return ResponseEntity.ok(page);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BoardDto> getById(@PathVariable Long id){
+        BoardDto boardDto = boardService.getById(id);
+        return ResponseEntity.ok(boardDto);
+    }
 }

@@ -10,4 +10,6 @@ public interface BoardService {
     BoardDto create(BoardCreationDto boardCreationDto, MultipartFile[] files);
 
     Page<BoardDto> getAll(Pageable pageable);
+
+    BoardDto getById(Long id);
 }

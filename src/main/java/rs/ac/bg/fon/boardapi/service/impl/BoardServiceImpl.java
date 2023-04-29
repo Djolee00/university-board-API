@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import rs.ac.bg.fon.boardapi.dto.BoardCreationDto;
 import rs.ac.bg.fon.boardapi.dto.BoardDto;
+import rs.ac.bg.fon.boardapi.exception.custom.BoardNotFoundException;
 import rs.ac.bg.fon.boardapi.mapper.BoardMapper;
 import rs.ac.bg.fon.boardapi.model.Board;
 import rs.ac.bg.fon.boardapi.model.BoardFile;
@@ -44,7 +45,8 @@ public class BoardServiceImpl implements BoardService {
                 }
             });
         }
-        return boardMapper.boardToBoardDto(boardRepository.save(board));
+        Board createdBoard = boardRepository.save(board);
+        return boardMapper.boardToBoardDto(createdBoard);
     }
 
     @Override
@@ -52,5 +54,11 @@ public class BoardServiceImpl implements BoardService {
         Page<Board> boards = boardRepository.findAll(pageable);
 
         return boards.map(boardMapper::boardToBoardDto);
+    }
+
+    @Override
+    public BoardDto getById(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+        return boardMapper.boardToBoardDto(board);
     }
 }
