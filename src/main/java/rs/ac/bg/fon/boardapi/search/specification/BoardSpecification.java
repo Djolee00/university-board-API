@@ -1,13 +1,12 @@
 package rs.ac.bg.fon.boardapi.search.specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.domain.Specification;
 import rs.ac.bg.fon.boardapi.model.Board;
+import rs.ac.bg.fon.boardapi.model.Employee;
+import rs.ac.bg.fon.boardapi.model.Membership;
 import rs.ac.bg.fon.boardapi.search.SearchCriteria;
 import rs.ac.bg.fon.boardapi.search.SearchOperation;
 
@@ -30,7 +29,10 @@ public class BoardSpecification implements Specification<Board> {
         switch (Objects.requireNonNull(SearchOperation.getSimpleOperation(searchCriteria.getOperation()))){
 
             case CONTAINS -> {
-                return criteriaBuilder.like(criteriaBuilder.lower(root.get(searchCriteria.getFilterKey())),"%"+strToSearch+"%");
+                if(searchCriteria.getFilterKey().equals("firstName") || searchCriteria.getFilterKey().equals("lastName"))
+                    return criteriaBuilder.like(employeeJoin(root).<String>get(searchCriteria.getFilterKey()),"%"+strToSearch+"%");
+
+                return criteriaBuilder.like(root.get(searchCriteria.getFilterKey()),"%"+strToSearch+"%");
             }
             case LESS_THAN_EQUAL -> {
                 return criteriaBuilder.lessThanOrEqualTo(root.<LocalDate>get(searchCriteria.getFilterKey()), LocalDate.parse(strToSearch, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
@@ -39,9 +41,16 @@ public class BoardSpecification implements Specification<Board> {
                 return criteriaBuilder.greaterThanOrEqualTo(root.<LocalDate>get(searchCriteria.getFilterKey()), LocalDate.parse(strToSearch, DateTimeFormatter.ofPattern("yyyy/MM/dd")));
             }
             case EQUAL -> {
-                return criteriaBuilder.equal(criteriaBuilder.lower(root.get(searchCriteria.getFilterKey())),strToSearch);
+                if(searchCriteria.getFilterKey().equals("empFirstname") || searchCriteria.getFilterKey().equals("empLastname"))
+                    return criteriaBuilder.equal(employeeJoin(root).<String>get(searchCriteria.getFilterKey()),"%"+strToSearch+"%");
+
+                return criteriaBuilder.equal(root.get(searchCriteria.getFilterKey()),strToSearch);
             }
             default -> throw new IllegalArgumentException("Specified value doesn't exist");
         }
+    }
+
+    private Join<Board, Employee> employeeJoin(Root<Board> root){
+        return root.join("memberships").join("employee");
     }
 }
