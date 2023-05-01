@@ -1,4 +1,4 @@
-package rs.ac.bg.fon.boardapi.util;
+package rs.ac.bg.fon.boardapi.search;
 
 public enum SearchOperation {
 
