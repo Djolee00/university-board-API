@@ -3,6 +3,7 @@ package rs.ac.bg.fon.boardapi.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -60,5 +61,11 @@ public class BoardServiceImpl implements BoardService {
     public BoardDto getById(Long id) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
         return boardMapper.boardToBoardDto(board);
+    }
+
+    @Override
+    public Page<BoardDto> findBySearchCriteria(Specification<Board> spec, Pageable page) {
+        Page<Board> boards = boardRepository.findAll(spec,page);
+        return boards.map(boardMapper::boardToBoardDto);
     }
 }
