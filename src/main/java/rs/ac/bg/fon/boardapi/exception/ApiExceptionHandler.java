@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import rs.ac.bg.fon.boardapi.exception.custom.BoardFileNotFoundException;
 import rs.ac.bg.fon.boardapi.exception.custom.BoardNotFoundException;
 import rs.ac.bg.fon.boardapi.exception.custom.EmployeeNotFoundException;
+
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -20,7 +22,7 @@ import java.util.Set;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(value = {EmployeeNotFoundException.class, BoardNotFoundException.class})
+    @ExceptionHandler(value = {EmployeeNotFoundException.class, BoardNotFoundException.class, BoardFileNotFoundException.class})
     public ResponseEntity<CustomException> onNotFoundException(RuntimeException ex) {
         CustomException exception = new CustomException(
                 ex.getMessage(),
