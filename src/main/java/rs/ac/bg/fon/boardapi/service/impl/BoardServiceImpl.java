@@ -37,15 +37,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDto create(BoardCreationDto boardCreationDto, MultipartFile[] files) {
         Board board = boardMapper.boardPostDtoToBoard(boardCreationDto);
-        if (files != null && files.length > 0) {
-            Arrays.stream(files).forEach(file -> {
-                try {
-                     board.addBoardFile(new BoardFile(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())), file.getContentType(), file.getBytes()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
+        addFiles(files, board);
         Board createdBoard = boardRepository.save(board);
         return boardMapper.boardToBoardDto(createdBoard);
     }
@@ -67,5 +59,36 @@ public class BoardServiceImpl implements BoardService {
     public Page<BoardDto> findBySearchCriteria(Specification<Board> spec, Pageable page) {
         Page<Board> boards = boardRepository.findAll(spec,page);
         return boards.map(boardMapper::boardToBoardDto);
+    }
+
+    @Override
+    public BoardDto update(Long id, BoardCreationDto updatedBoard, MultipartFile[] files) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+
+        board.setBoardStatus(updatedBoard.boardStatus());
+        board.setName(updatedBoard.name());
+        board.setMemberships(updatedBoard.memberships());
+        board.setStartDate(updatedBoard.startDate());
+        board.setEndDate(updatedBoard.endDate());
+
+        if(files != null){
+            board.setBoardFiles(null);
+            addFiles(files,board);
+        }
+
+        return boardMapper.boardToBoardDto(boardRepository.save(board));
+    }
+
+
+    private static void addFiles(MultipartFile[] files, Board board) {
+        if (files != null && files.length > 0) {
+            Arrays.stream(files).forEach(file -> {
+                try {
+                    board.addBoardFile(new BoardFile(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())), file.getContentType(), file.getBytes()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 }
