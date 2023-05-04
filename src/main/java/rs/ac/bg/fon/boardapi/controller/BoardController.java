@@ -83,4 +83,10 @@ public class BoardController {
         BoardDto updatedBoardDto = boardService.update(id,updatedBoard,files);
         return ResponseEntity.ok(updatedBoardDto);
     }
+
+    @PatchMapping("/{id}/files")
+    public ResponseEntity<BoardDto> addFiles(@PathVariable Long id, @RequestPart(value = "files",required = false) MultipartFile[] files){
+        BoardDto updatedBoardDto = boardService.putFiles(id,files);
+        return ResponseEntity.ok(updatedBoardDto);
+    }
 }

@@ -72,7 +72,6 @@ public class BoardServiceImpl implements BoardService {
         freshBoard.setBoardFiles(dbBoard.getBoardFiles());
 
         if(files!=null){
-
             freshBoard.setBoardFiles(new HashSet<>());
             addFiles(files, freshBoard);
         }
@@ -80,6 +79,12 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.boardToBoardDto(boardRepository.save(freshBoard));
     }
 
+    @Override
+    public BoardDto putFiles(Long id, MultipartFile[] files) {
+        Board dbBoard = boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+        addFiles(files,dbBoard);
+        return boardMapper.boardToBoardDto(boardRepository.save(dbBoard));
+    }
 
 
     private static void addFiles(MultipartFile[] files, Board board) {

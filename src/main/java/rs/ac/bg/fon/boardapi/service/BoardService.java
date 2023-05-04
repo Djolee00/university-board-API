@@ -18,4 +18,6 @@ public interface BoardService {
     Page<BoardDto> findBySearchCriteria(Specification<Board> spec, Pageable page);
 
     BoardDto update(Long id, BoardCreationDto updatedBoard, MultipartFile[] files);
+
+    BoardDto putFiles(Long id, MultipartFile[] files);
 }
