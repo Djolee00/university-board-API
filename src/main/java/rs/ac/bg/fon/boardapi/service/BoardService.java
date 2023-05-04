@@ -20,4 +20,6 @@ public interface BoardService {
     BoardDto update(Long id, BoardCreationDto updatedBoard, MultipartFile[] files);
 
     BoardDto putFiles(Long id, MultipartFile[] files);
+
+    void delete(Long id);
 }

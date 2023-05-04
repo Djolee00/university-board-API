@@ -86,6 +86,11 @@ public class BoardServiceImpl implements BoardService {
         return boardMapper.boardToBoardDto(boardRepository.save(dbBoard));
     }
 
+    @Override
+    public void delete(Long id) {
+        Board dbBoard = boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+        boardRepository.delete(dbBoard);
+    }
 
     private static void addFiles(MultipartFile[] files, Board board) {
         if (files != null && files.length > 0 && !files[0].isEmpty()) {

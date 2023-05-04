@@ -89,4 +89,10 @@ public class BoardController {
         BoardDto updatedBoardDto = boardService.putFiles(id,files);
         return ResponseEntity.ok(updatedBoardDto);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        boardService.delete(id);
+    }
 }
