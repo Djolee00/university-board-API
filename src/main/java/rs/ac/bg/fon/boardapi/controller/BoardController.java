@@ -78,7 +78,7 @@ public class BoardController {
 
     @PutMapping("/{id}")
     public ResponseEntity<BoardDto> update(@PathVariable Long id,
-                                           @Valid @RequestPart("board") BoardCreationDto updatedBoard,
+                                           @Valid @RequestPart("updatedBoard") BoardCreationDto updatedBoard,
                                            @RequestPart(value = "files",required = false) MultipartFile[] files){
         BoardDto updatedBoardDto = boardService.update(id,updatedBoard,files);
         return ResponseEntity.ok(updatedBoardDto);

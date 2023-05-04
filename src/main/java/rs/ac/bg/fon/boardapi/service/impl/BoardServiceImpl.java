@@ -63,15 +63,14 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardDto update(Long id, BoardCreationDto updatedBoard, MultipartFile[] files) {
-        Board board = boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+        boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
 
-        board.setBoardStatus(updatedBoard.boardStatus());
-        board.setName(updatedBoard.name());
-        board.setMemberships(updatedBoard.memberships());
-        board.setStartDate(updatedBoard.startDate());
-        board.setEndDate(updatedBoard.endDate());
+        Board board = boardMapper.boardPostDtoToBoard(updatedBoard);
+        board.setId(id);
 
-        if(files != null){
+        board.getMemberships().forEach(m->m.getMembershipId().setBoardId(id));
+
+        if(files!=null){
             board.setBoardFiles(null);
             addFiles(files,board);
         }
