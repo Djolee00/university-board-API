@@ -19,6 +19,7 @@ import rs.ac.bg.fon.boardapi.service.BoardService;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
 
 @Service
@@ -57,30 +58,32 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Page<BoardDto> findBySearchCriteria(Specification<Board> spec, Pageable page) {
-        Page<Board> boards = boardRepository.findAll(spec,page);
+        Page<Board> boards = boardRepository.findAll(spec, page);
         return boards.map(boardMapper::boardToBoardDto);
     }
 
     @Override
     public BoardDto update(Long id, BoardCreationDto updatedBoard, MultipartFile[] files) {
-        boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+        Board dbBoard = boardRepository.findById(id).orElseThrow(() -> new BoardNotFoundException(id));
+        Board freshBoard = boardMapper.boardPostDtoToBoard(updatedBoard);
 
-        Board board = boardMapper.boardPostDtoToBoard(updatedBoard);
-        board.setId(id);
-
-        board.getMemberships().forEach(m->m.getMembershipId().setBoardId(id));
+        freshBoard.setId(id);
+        freshBoard.getMemberships().forEach(m -> m.getMembershipId().setBoardId(id));
+        freshBoard.setBoardFiles(dbBoard.getBoardFiles());
 
         if(files!=null){
-            board.setBoardFiles(null);
-            addFiles(files,board);
+
+            freshBoard.setBoardFiles(new HashSet<>());
+            addFiles(files, freshBoard);
         }
 
-        return boardMapper.boardToBoardDto(boardRepository.save(board));
+        return boardMapper.boardToBoardDto(boardRepository.save(freshBoard));
     }
 
 
+
     private static void addFiles(MultipartFile[] files, Board board) {
-        if (files != null && files.length > 0) {
+        if (files != null && files.length > 0 && !files[0].isEmpty()) {
             Arrays.stream(files).forEach(file -> {
                 try {
                     board.addBoardFile(new BoardFile(StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename())), file.getContentType(), file.getBytes()));
